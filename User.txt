@@ -1,0 +1,4 @@
+
+A1006;WernKai;N0.1,Jalan 999;0123456789;admin;admin;1;1
+999avs;kaikai;123,,asdasd;1234;po;123;2;2
+manager123;manager;123,ppp;165223636;manager;manager;2;2
