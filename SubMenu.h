@@ -368,7 +368,7 @@ public:
     void returnMenu() {
         string productname;
         double productprice;
-        int option, productid, stockquantity;
+        int option, productid, stockquantity, isfragile;
 
         do {
             system("CLS");
@@ -392,7 +392,7 @@ public:
                 cin >> productid;
             };
 
-            cout << "\Product Name :";
+            cout << "Product Name :";
             cin >> productname;
 
             cout << "Price Per Unit :";
@@ -413,15 +413,27 @@ public:
                 cin.clear();
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 cout << "\nPlease enter valid product quantity.\n";
-                cout << "Quantity : ";
+                cout << "Quantity :";
                 cin >> stockquantity;
+            };
+
+            cout << "Fragile (1 - No, 2 - Yes) :";
+            cin >> isfragile;
+            cin.ignore(1);
+
+            while ((isfragile != 1 && isfragile != 2) || !cin) {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                cout << "\nPlease enter vailid option.\n";
+                cout << "Fragile (1 - No, 2 - Yes) :";
+                cin >> isfragile;
             };
 
 
             if (productname != "0" && productid != 0) {
                 // Start creating product
                 Manager manager(this->username);
-                string signal = manager.AddProduct(productid, productname, productprice, stockquantity);
+                string signal = manager.AddProduct(productid, productname, productprice, stockquantity, isfragile);
 
                 if (signal == "success") {
                     cout << "\nProduct created, enter 0 return to Manager Menu.\n";
@@ -435,7 +447,7 @@ public:
 
             }
             else {
-                cout << "\nStop user creation, enter 0 return to Admin Menu.\n";
+                cout << "\nStop user creation, enter 0 return to Manager Menu.\n";
             }
 
             // Back to Manager Menu
@@ -445,7 +457,7 @@ public:
             while (option != 0 || !cin) {
                 cin.clear();
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                cout << "\nPlease enter 0 to return to Admin Menu.\n";
+                cout << "\nPlease enter 0 to return to Manager Menu.\n";
                 cout << "Enter your option: ";
                 cin >> option;
                 cin.ignore(1);
@@ -482,7 +494,13 @@ public:
             cout << "=                   0 - Back                      =\n";
             cout << "===================================================\n";
             cout << "***          Please do not enter space          ***\n";
-            cout << "Product Id :";
+            cout << "***   Insert 0 in Product Id to return to Menu  ***\n";
+            cout << "***************************************************\n";
+
+            Manager manager(this->username);
+            cout << manager.ViewProduct();
+
+            cout << "\nProduct Id :";
             cin >> productid;
             while (!cin) {
                 cin.clear();
@@ -494,7 +512,6 @@ public:
 
             if (productid != 0) {
                 // Start delect product
-                Manager manager(this->username);
                 string signal = manager.DeleteProduct(productid);
 
                 if (signal == "success") {
@@ -509,29 +526,8 @@ public:
 
             }
             else {
-                cout << "\nStop product deletion, enter 0 return to Admin Menu.\n";
+                cout << "\nStop product deletion, enter 0 return to Manager Menu.\n";
             }
-
-            //if (createusername != "0" && this->username != createusername) {
-            //    // Start creating user
-            //    Admin admin(this->username);
-
-            //    if (admin.isUserExists(createusername) && createusername != "0") {
-            //        if (admin.DeleteUser(createusername)) {
-            //            cout << "\nUser deleted, enter 0 return to Admin Menu.\n";
-            //        };
-            //    }
-            //    else {
-            //        cout << "\nUser not exists, enter 0 return to Admin Menu.\n";
-            //    }
-            //}
-            //else if (this->username == createusername) {
-            //    cout << "\nYou can't delete your own account, please use other admin account to perform this action.\n";
-            //    cout << "\nCancel user deletion, enter 0 return to Admin Menu.\n";
-            //}
-            //else {
-            //    cout << "\nCancel user deletion, enter 0 return to Admin Menu.\n";
-            //}
 
             // Back to Admin Menu
             cin >> option;
@@ -540,7 +536,7 @@ public:
             while (option != 0 || !cin) {
                 cin.clear();
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                cout << "\nPlease enter 0 to return to Admin Menu.\n";
+                cout << "\nPlease enter 0 to return to Manager Menu.\n";
                 cout << "Enter your option: ";
                 cin >> option;
                 cin.ignore(1);
@@ -554,7 +550,165 @@ public:
     }
 };
 
-class EditViewSearchProductMenu {};
+class EditViewSearchProductMenu {
+private:
+    string username;
+
+public:
+    bool isExit = false;
+
+    EditViewSearchProductMenu(string username) {
+        this->username = username;
+    }
+
+    void returnMenu() {
+        string productname;
+        int option;
+
+        do {
+            system("CLS");
+            cout << "-ADMIN CONSOLE - ONLINE SHOPPING MANAGEMENT SYSTEM-\n";
+            cout << "-User: " + username + "\n";
+            cout << "===================================================\n";
+            cout << "=                 Product Details                 =\n";
+            cout << "=                   1 - Edit                      =\n";
+            cout << "=                   2 - View                      =\n";
+            cout << "=                   3 - Search                    =\n";
+            cout << "=                   0 - Back                      =\n";
+            cout << "===================================================\n";
+            cout << "***          Please do not enter space          ***\n";
+            cout << "***************************************************\n";
+            cout << "Enter your option: ";
+            cin >> option;
+            cin.ignore(1);
+            cout << "\n";
+
+            while ((option != 1 && option != 2 && option != 3 && option != 0) || !cin) {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                cout << "Please enter valid option.\n";
+                cout << "Enter your option: ";
+                cin >> option;
+                cin.ignore(1);
+                cout << "\n";
+            };
+
+            Manager manager(this->username);
+
+            switch (option) {
+                case 1: {
+
+                    double editproductprice;
+                    int editstockquantity, editisfragile;
+
+                    cout << manager.ViewProduct();
+                    cout << "\nPlease enter a product name to edit.\n";
+                    cin >> productname;
+
+                    if (productname != "0") {
+
+                        cout << "\nCurrent record:";
+                        cout << manager.SearchProduct(productname);
+
+                        cout << "\n";
+                        cout << "\nPlease enter details (enter 0 if unchange): \n";
+                        cout << "\nPrice Per Unit: ";
+                        cin >> editproductprice;
+                        while (!cin) {
+                            cin.clear();
+                            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                            cout << "\nPlease enter valid product price.\n";
+                            cout << "Price Per Unit : ";
+                            cin >> editproductprice;
+                        };
+                        cout << "\nStock Quantity: ";
+                        cin >> editstockquantity;
+                        while (!cin) {
+                            cin.clear();
+                            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                            cout << "\nPlease enter valid product quantity.\n";
+                            cout << "Quantity :";
+                            cin >> editstockquantity;
+                        };
+                        cout << "\nFragile (1 - No, 2 - Yes, 0 - Unchange): ";
+                        cin >> editisfragile;            
+                        cin.ignore(1);
+                        while ((editisfragile != 1 && editisfragile != 2 && editisfragile !=0) || !cin) {
+                            cin.clear();
+                            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                            cout << "\nPlease enter vailid option.\n";
+                            cout << "Fragile (1 - No, 2 - Yes, 0 - Unchange) :";
+                            cin >> editisfragile;
+                        };
+
+                        string signal = manager.EditProduct(productname, editproductprice, editstockquantity, editisfragile);
+
+                        if (signal == "success") {
+                            cout << "\nEdited record:";
+                            cout << manager.SearchProduct(productname);
+                            cout << "\nProduct updated, enter 0 return to Manager Menu.\n";
+                        }
+                        else if (signal == "fail") {
+                            cout << "\nProduct fail to update, enter 0 return to Manager Menu.\n";
+                        }
+                        else if (signal == "notfound") {
+                            cout << "\nProduct not exists in database, enter 0 return to Manager Menu.\n";
+                        }
+
+                    }
+                    else if (productname == "0") {
+                        cout << "\nStop product edit, enter 0 return to Manager Menu.\n";
+                    }
+                    break;
+
+                }
+                case 2: {
+                    cout << manager.ViewProduct();
+                    cout << "\nPlease enter 0 to return to Manager Menu.\n";
+                    break;
+                }
+                case 3: {
+                    cout << manager.ViewProduct();
+                    cout << "\nPlease enter a product name to search.\n";
+                    cin >> productname;
+
+                    if (productname != "0") {
+  
+                        Manager manager(this->username);
+                        cout << manager.SearchProduct(productname);
+                        cout << "\nPlease enter 0 to return to Manager Menu.\n";
+
+                    }
+                    else {
+                        cout << "\nStop product searching, enter 0 return to Manager Menu.\n";
+                    }
+                    break;
+                }
+                case 0: {
+                    cout << "\nStop product search, enter 0 return to Manager Menu.\n";
+                }
+            };
+
+            // Back to Admin Menu
+            cin >> option;
+            cin.ignore(1);
+
+            while (option != 0 || !cin) {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                cout << "\nPlease enter 0 to return to Manager Menu.\n";
+                cout << "Enter your option: ";
+                cin >> option;
+                cin.ignore(1);
+            };
+
+            if (option == 0) {
+                isExit = true;
+            }
+
+        } while (!isExit);
+    }
+};
 
 //Maanger Order Menu
 class AddOrderMenu {};

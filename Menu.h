@@ -67,10 +67,10 @@ public:
                 break;
             }
             case 2: {
-                //EditViewSearchUserMenu userdetailsmenu(this->username);
-                //do {
-                //    userdetailsmenu.returnMenu();
-                //} while (!userdetailsmenu.isExit);
+                EditViewSearchProductMenu userdetailsmenu(this->username);
+                do {
+                    userdetailsmenu.returnMenu();
+                } while (!userdetailsmenu.isExit);
                 break;
             }
             case 3: {

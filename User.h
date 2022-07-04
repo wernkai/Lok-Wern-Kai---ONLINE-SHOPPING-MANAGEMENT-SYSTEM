@@ -304,9 +304,9 @@ public:
         this->username = username;
     }
 
-    string AddProduct(int productid, string productname, double productprice, int stockquantity) {
+    string AddProduct(int productid, string productname, double productprice, int stockquantity, int isfragile) {
 
-        Product product(productid, productname, productprice, stockquantity);
+        Product product(productid, productname, productprice, stockquantity, isfragile);
         string signal = "";
 
         if (!product.isProductExists()) {
@@ -341,16 +341,38 @@ public:
         return signal;
     }
 
-    void EditProduct() {
+    string EditProduct(string productname, double editproductprice, int editstockquantity, int editisfragile) {
 
+        Product product = Product(productname);
+        string signal = "";    
+
+        if (product.isProductExists()) {
+            if (product.editProduct(editproductprice, editstockquantity, editisfragile)) {
+                signal = "success";
+            }
+            else {
+                signal = "fail";
+            };
+        }
+        else {
+            signal = "notfound";
+        }
+        return signal;
     }
 
-    void ViewProduct() {
-
+    string ViewProduct() {
+        Product product = Product();
+        return product.viewProduct();
     }
 
-    void SearchProduct() {
+    string SearchProduct(string productname) {
+        Product product = Product(productname);
 
+        if (product.isProductExists()) {
+            return product.searchProduct();
+        }
+        else
+            return "\nProduct not exists.\n";
     }
 
     void AddOrder() {
