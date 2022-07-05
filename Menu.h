@@ -48,7 +48,7 @@ public:
             cin.ignore(1);
             cout << "\n";
 
-            while ((option != 1 && option != 2 && option != 3 && option != 0) || !cin) {
+            while ((option != 1 && option != 2 && option != 3 && option != 4 && option != 5 && option != 6 && option != 0) || !cin) {
                 cin.clear();
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 cout << "Please enter valid option.\n";
@@ -81,24 +81,24 @@ public:
                 break;
             }
             case 4: {
-                //DeleteUserMenu delusermenu(this->username);
-                //do {
-                //    delusermenu.returnMenu();
-                //} while (!delusermenu.isExit);
+                AddOrderMenu addordermenu(this->username);
+                do {
+                    addordermenu.returnMenu();
+                } while (!addordermenu.isExit);
                 break;
             }
             case 5: {
-                //DeleteUserMenu delusermenu(this->username);
+                //EditViewSearchProductMenu userdetailsmenu(this->username);
                 //do {
-                //    delusermenu.returnMenu();
-                //} while (!delusermenu.isExit);
+                //    userdetailsmenu.returnMenu();
+                //} while (!userdetailsmenu.isExit);
                 break;
             }
             case 6: {
-                //DeleteUserMenu delusermenu(this->username);
+                //DeleteOrderMenu delordermenu(this->username);
                 //do {
-                //    delusermenu.returnMenu();
-                //} while (!delusermenu.isExit);
+                //    delordermenu.returnMenu();
+                //} while (!delordermenu.isExit);
                 break;
             }
             case 0: {

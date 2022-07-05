@@ -375,8 +375,22 @@ public:
             return "\nProduct not exists.\n";
     }
 
-    void AddOrder() {
+    string AddOrder(int orderid, int custormerid, int numberofitem) {
+        Order order(orderid, custormerid, numberofitem);
+        string signal = "";
 
+        if (!order.isOrderExists()) {
+            if (order.createOrder()) {
+                signal = "success";
+            }
+            else {
+                signal = "fail";
+            };
+        }
+        else {
+            signal = "duplicate";
+        }
+        return signal;
     }
 
     void DeleteOrder() {

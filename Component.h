@@ -216,7 +216,6 @@ public:
         ifstream file("Product.txt");
         string
             pid, pname, pprice, pstock, pisfragile;
-        regex newlines_re("\n+");
 
         while (file && !file.eof()) {
             getline(file, pid, ';');
@@ -237,7 +236,51 @@ public:
 };
 
 class Order {
-	class OrderItem{};
+private:
+    int orderid, customerid, numberofitem;
+public:
+
+    Order(int orderid, int customerid, int numberofitem) {
+        this->orderid = orderid;
+        this->customerid = customerid;
+        this->numberofitem = numberofitem;
+    }
+
+    bool createOrder() {
+        ifstream infile("Order.txt");
+        ofstream file("Order.txt", ios::app);
+
+        if (infile.is_open()) {
+            file << "\n" + to_string(this->orderid) + ";" + to_string(this->customerid) + ";" + to_string(this->numberofitem);
+        }
+
+        infile.close();
+        file.close();
+
+        return true;
+    }
+
+    bool isOrderExists() {
+        ifstream file("Order.txt");
+        string
+            oid, cid, itemno;
+
+        while (file && !file.eof()) {
+            getline(file, oid, ';');
+            getline(file, cid, ';');
+            getline(file, itemno);
+
+            if (removeNewLine(oid) == to_string(this->orderid) && cid == to_string(this->customerid)) {
+                file.close();
+                return true;
+            }
+        }
+        file.close();
+        return false;
+    }
+};
+
+class OrderItem : private Order{
 };
 
 class Cart {};

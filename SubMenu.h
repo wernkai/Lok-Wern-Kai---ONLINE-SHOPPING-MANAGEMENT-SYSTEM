@@ -447,7 +447,7 @@ public:
 
             }
             else {
-                cout << "\nStop user creation, enter 0 return to Manager Menu.\n";
+                cout << "\nStop product creation, enter 0 return to Manager Menu.\n";
             }
 
             // Back to Manager Menu
@@ -710,7 +710,7 @@ public:
     }
 };
 
-//Maanger Order Menu
+//Manager Order Menu
 class AddOrderMenu {
 private:
     string username;
@@ -723,9 +723,9 @@ public:
     }
 
     void returnMenu() {
-        string productname;
-        double productprice;
-        int option, productid, stockquantity, isfragile;
+
+        int option, orderid, custormerid, numberofitem;
+
 
         do {
             system("CLS");
@@ -738,73 +738,57 @@ public:
             cout << "***           Please do not enter space         ***\n";
             cout << "***   Insert 0 in Product Id to return to Menu  ***\n";
             cout << "***************************************************\n";
-            cout << "Product Id :";
-            cin >> productid;
+            cout << "Order Id :";
+            cin >> orderid;
 
             while (!cin) {
                 cin.clear();
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 cout << "\nPlease enter valid product id.\n";
-                cout << "Product Id : ";
-                cin >> productid;
+                cout << "Order Id : ";
+                cin >> orderid;
             };
 
-            cout << "Product Name :";
-            cin >> productname;
-
-            cout << "Price Per Unit :";
-            cin >> productprice;
+            cout << "Customer Id :";
+            cin >> custormerid;
 
             while (!cin) {
                 cin.clear();
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 cout << "\nPlease enter valid product price.\n";
                 cout << "Price Per Unit : ";
-                cin >> productprice;
+                cin >> custormerid;
             };
 
-            cout << "Quantity :";
-            cin >> stockquantity;
+            cout << "No. of Item :";
+            cin >> numberofitem;
 
             while (!cin) {
                 cin.clear();
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 cout << "\nPlease enter valid product quantity.\n";
                 cout << "Quantity :";
-                cin >> stockquantity;
+                cin >> numberofitem;
             };
 
-            cout << "Fragile (1 - No, 2 - Yes) :";
-            cin >> isfragile;
-            cin.ignore(1);
-
-            while ((isfragile != 1 && isfragile != 2) || !cin) {
-                cin.clear();
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                cout << "\nPlease enter vailid option.\n";
-                cout << "Fragile (1 - No, 2 - Yes) :";
-                cin >> isfragile;
-            };
-
-
-            if (productname != "0" && productid != 0) {
+            if (orderid != 0 && custormerid != 0 && numberofitem != 0) {
                 // Start creating product
                 Manager manager(this->username);
-                string signal = manager.AddProduct(productid, productname, productprice, stockquantity, isfragile);
+                string signal = manager.AddOrder(orderid, custormerid, numberofitem);
 
                 if (signal == "success") {
-                    cout << "\nProduct created, enter 0 return to Manager Menu.\n";
+                    cout << "\nOrder created, enter 0 return to Manager Menu.\n";
                 }
                 else if (signal == "fail") {
-                    cout << "\nProduct fail to create, enter 0 return to Manager Menu.\n";
+                    cout << "\nOrder fail to create, enter 0 return to Manager Menu.\n";
                 }
                 else if (signal == "duplicate") {
-                    cout << "\nProduct already exists or Product Id duplicated, enter 0 return to Manager Menu.\n";
+                    cout << "\nOrder already exists or Product Id duplicated, enter 0 return to Manager Menu.\n";
                 }
 
             }
             else {
-                cout << "\nStop user creation, enter 0 return to Manager Menu.\n";
+                cout << "\nStop order creation, enter 0 return to Manager Menu.\n";
             }
 
             // Back to Manager Menu
