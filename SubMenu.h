@@ -711,7 +711,122 @@ public:
 };
 
 //Maanger Order Menu
-class AddOrderMenu {};
+class AddOrderMenu {
+private:
+    string username;
+
+public:
+    bool isExit = false;
+
+    AddOrderMenu(string username) {
+        this->username = username;
+    }
+
+    void returnMenu() {
+        string productname;
+        double productprice;
+        int option, productid, stockquantity, isfragile;
+
+        do {
+            system("CLS");
+            cout << "-ADMIN CONSOLE - ONLINE SHOPPING MANAGEMENT SYSTEM-\n";
+            cout << "-User: " + username + "\n";
+            cout << "===================================================\n";
+            cout << "=                   Add Order                     =\n";
+            cout << "=                   0 - Back                      =\n";
+            cout << "===================================================\n";
+            cout << "***           Please do not enter space         ***\n";
+            cout << "***   Insert 0 in Product Id to return to Menu  ***\n";
+            cout << "***************************************************\n";
+            cout << "Product Id :";
+            cin >> productid;
+
+            while (!cin) {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                cout << "\nPlease enter valid product id.\n";
+                cout << "Product Id : ";
+                cin >> productid;
+            };
+
+            cout << "Product Name :";
+            cin >> productname;
+
+            cout << "Price Per Unit :";
+            cin >> productprice;
+
+            while (!cin) {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                cout << "\nPlease enter valid product price.\n";
+                cout << "Price Per Unit : ";
+                cin >> productprice;
+            };
+
+            cout << "Quantity :";
+            cin >> stockquantity;
+
+            while (!cin) {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                cout << "\nPlease enter valid product quantity.\n";
+                cout << "Quantity :";
+                cin >> stockquantity;
+            };
+
+            cout << "Fragile (1 - No, 2 - Yes) :";
+            cin >> isfragile;
+            cin.ignore(1);
+
+            while ((isfragile != 1 && isfragile != 2) || !cin) {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                cout << "\nPlease enter vailid option.\n";
+                cout << "Fragile (1 - No, 2 - Yes) :";
+                cin >> isfragile;
+            };
+
+
+            if (productname != "0" && productid != 0) {
+                // Start creating product
+                Manager manager(this->username);
+                string signal = manager.AddProduct(productid, productname, productprice, stockquantity, isfragile);
+
+                if (signal == "success") {
+                    cout << "\nProduct created, enter 0 return to Manager Menu.\n";
+                }
+                else if (signal == "fail") {
+                    cout << "\nProduct fail to create, enter 0 return to Manager Menu.\n";
+                }
+                else if (signal == "duplicate") {
+                    cout << "\nProduct already exists or Product Id duplicated, enter 0 return to Manager Menu.\n";
+                }
+
+            }
+            else {
+                cout << "\nStop user creation, enter 0 return to Manager Menu.\n";
+            }
+
+            // Back to Manager Menu
+            cin >> option;
+            cin.ignore(1);
+
+            while (option != 0 || !cin) {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                cout << "\nPlease enter 0 to return to Manager Menu.\n";
+                cout << "Enter your option: ";
+                cin >> option;
+                cin.ignore(1);
+            };
+
+            if (option == 0) {
+                isExit = true;
+            }
+
+        } while (!isExit);
+    }
+};
 
 class DeleteOrderMenu {};
 
