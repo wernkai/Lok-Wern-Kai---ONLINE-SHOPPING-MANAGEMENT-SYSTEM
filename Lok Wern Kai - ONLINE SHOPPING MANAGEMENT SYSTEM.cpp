@@ -21,48 +21,48 @@ int main()
     do {
         screen.returnMenu();
 
-        switch (screen.permission) {
+        switch (screen.getPermission()) {
             case 1: {
-                AdminMenu adminScreen(screen.username);
+                AdminMenu adminScreen(screen.getUsername());
 
                 do {
                     adminScreen.returnMenu();
-                } while (!adminScreen.isExit);
+                } while (!adminScreen.getIsExit());
 
-                screen.permission = 9;
-                screen.isExit = false;
+                screen.setPermission(9);
+                screen.setIsExit(false);
 
                 break;
             }
             case 2: { //manager
-                ManagerMenu managerScreen(screen.username);
+                ManagerMenu managerScreen(screen.getUsername());
 
                 do {
                     managerScreen.returnMenu();
-                } while (!managerScreen.isExit);
+                } while (!managerScreen.getIsExit());
 
-                screen.permission = 9;
-                screen.isExit = false;
+                screen.setPermission(9);
+                screen.setIsExit(false);
 
                 break;
             }
             case 3: { //customer
-                CustomerMenu customerScreen(screen.username);
+                CustomerMenu customerScreen(screen.getUsername());
 
                 do {
                     customerScreen.returnMenu();
-                } while (!customerScreen.isExit);
+                } while (!customerScreen.getIsExit());
 
-                screen.permission = 9;
-                screen.isExit = false;
+                screen.setPermission(9);
+                screen.setIsExit(false);
 
                 break;
             }
             case 0: //invalid
-                cout << screen.username + " is invalid";
+                cout << screen.getUsername() + " is invalid";
                 break;
         }
-    } while (!screen.isExit);
+    } while (!screen.getIsExit());
     
 }
 

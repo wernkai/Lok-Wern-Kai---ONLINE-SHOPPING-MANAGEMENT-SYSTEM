@@ -29,6 +29,12 @@
     <Text Include="Product.txt">
       <Filter>Data</Filter>
     </Text>
+    <Text Include="Order.txt">
+      <Filter>Data</Filter>
+    </Text>
+    <Text Include="OrderItem.txt">
+      <Filter>Data</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Menu.h">

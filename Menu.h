@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <stdlib.h>
+#include <iomanip>
 #include "User.h"
 #include "SubMenu.h"
 
@@ -11,10 +12,9 @@ class ManagerMenu {
 
 private:
     string username;
+    bool isExit = false;
 
 public:
-    //bool isLogout = false;
-    bool isExit = false;
 
     ManagerMenu(string username) {
         this->username = username;
@@ -24,22 +24,29 @@ public:
         this->username = "";
     }
 
+    bool getIsExit() {
+        return this->isExit;
+    }
+
     void returnMenu() {
         int option;
-        //bool isExit = false;
 
         do {
             system("CLS");
             cout << "-ADMIN CONSOLE - ONLINE SHOPPING MANAGEMENT SYSTEM-\n";
             cout << "-User: " + username + "\n";
-            cout << "===================================================\n";
-            cout << "=                 Manager Menu                    =\n";
+            //cout << "===================================================\n";
+            cout << setfill('=') << setw(55) << "\n";
+            cout << "=" << setfill(' ') << setw(30) << "Manager Menu" << setfill(' ') << setw(21) << "=\n";
             cout << "=                1 - Add Product                  =\n";
             cout << "=                2 - Edit/View/Search Product     =\n";
             cout << "=                3 - Delete Product               =\n";
             cout << "=                4 - Add Order                    =\n";
             cout << "=                5 - Edit/View/Search Order       =\n";
             cout << "=                6 - Delete Order                 =\n";
+            cout << "=                7 - Add Order Item               =\n";
+            cout << "=                8 - Edit/View/Search Order Item  =\n";
+            cout << "=                9 - Delete Order Item            =\n";
             cout << "=                0 - Logout                       =\n";
             cout << "===================================================\n";
             cout << "***          Please do not enter space          ***\n";
@@ -48,7 +55,8 @@ public:
             cin.ignore(1);
             cout << "\n";
 
-            while ((option != 1 && option != 2 && option != 3 && option != 4 && option != 5 && option != 6 && option != 0) || !cin) {
+            while ((option != 1 && option != 2 && option != 3 && option != 4 && option != 5 && option != 6 
+                && option != 7 && option != 8 && option != 9 && option != 0) || !cin) {
                 cin.clear();
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 cout << "Please enter valid option.\n";
@@ -63,52 +71,73 @@ public:
                 AddProductMenu addproductmenu(this->username);
                 do {
                     addproductmenu.returnMenu();
-                } while (!addproductmenu.isExit);
+                } while (!addproductmenu.getIsExit());
                 break;
             }
             case 2: {
                 EditViewSearchProductMenu userdetailsmenu(this->username);
                 do {
                     userdetailsmenu.returnMenu();
-                } while (!userdetailsmenu.isExit);
+                } while (!userdetailsmenu.getIsExit());
                 break;
             }
             case 3: {
                 DeleteProductMenu delproductmenu(this->username);
                 do {
                     delproductmenu.returnMenu();
-                } while (!delproductmenu.isExit);
+                } while (!delproductmenu.getIsExit());
                 break;
             }
             case 4: {
                 AddOrderMenu addordermenu(this->username);
                 do {
                     addordermenu.returnMenu();
-                } while (!addordermenu.isExit);
+                } while (!addordermenu.getIsExit());
                 break;
             }
             case 5: {
-                //EditViewSearchProductMenu userdetailsmenu(this->username);
-                //do {
-                //    userdetailsmenu.returnMenu();
-                //} while (!userdetailsmenu.isExit);
+                EditViewSearchOrderMenu orderdetailsmenu(this->username);
+                do {
+                    orderdetailsmenu.returnMenu();
+                } while (!orderdetailsmenu.getIsExit());
                 break;
             }
             case 6: {
+                DeleteOrderMenu delordermenu(this->username);
+                do {
+                    delordermenu.returnMenu();
+                } while (!delordermenu.getIsExit());
+                break;
+            }
+            case 7: {
+                //AddOrderMenu addordermenu(this->username);
+                //do {
+                //    addordermenu.returnMenu();
+                //} while (!addordermenu.getIsExit());
+                break;
+            }
+            case 8: {
+                //EditViewSearchOrderMenu orderdetailsmenu(this->username);
+                //do {
+                //    orderdetailsmenu.returnMenu();
+                //} while (!orderdetailsmenu.getIsExit());
+                break;
+            }
+            case 9: {
                 //DeleteOrderMenu delordermenu(this->username);
                 //do {
                 //    delordermenu.returnMenu();
-                //} while (!delordermenu.isExit);
+                //} while (!delordermenu.getIsExit());
                 break;
             }
             case 0: {
                 cout << "logout";
-                isExit = true;
+                this->isExit = true;
                 break;
             }
             }
 
-        } while (!isExit);
+        } while (!this->isExit);
     }
 };
 
@@ -116,10 +145,9 @@ class CustomerMenu {
 
 private:
     string username;
+    bool isExit = false;
 
 public:
-    //bool isLogout = false;
-    bool isExit = false;
 
     CustomerMenu(string username) {
         this->username = username;
@@ -129,9 +157,12 @@ public:
         this->username = "";
     }
 
+    bool getIsExit() {
+        return this->isExit;
+    }
+
     void returnMenu() {
         int option;
-        //bool isExit = false;
 
         do {
             system("CLS");
@@ -191,12 +222,12 @@ public:
             }
             case 0: {
                 cout << "logout";
-                isExit = true;
+                this->isExit = true;
                 break;
             }
             }
 
-        } while (!isExit);
+        } while (!this->isExit);
     }
 };
 
@@ -205,9 +236,9 @@ class AdminMenu {
 
 private:
     string username;
+    bool isExit = false;
 
 public:
-    bool isExit = false;
 
     AdminMenu(string username) {
         this->username = username;
@@ -215,6 +246,10 @@ public:
 
     ~AdminMenu() {
         this->username = "";
+    }
+
+    bool getIsExit() {
+        return this->isExit;
     }
 
     void returnMenu() {
@@ -253,31 +288,31 @@ public:
                     do {
                         addusermenu.returnMenu();
                     } 
-                    while (!addusermenu.isExit);
+                    while (!addusermenu.getIsExit());
                     break;
                 }
                 case 2: {
                     EditViewSearchUserMenu userdetailsmenu(this->username);
                     do {
                         userdetailsmenu.returnMenu();
-                    } while (!userdetailsmenu.isExit);
+                    } while (!userdetailsmenu.getIsExit());
                     break;
                 }
                 case 3: {
                     DeleteUserMenu delusermenu(this->username);
                     do {
                         delusermenu.returnMenu();
-                    } while (!delusermenu.isExit);
+                    } while (!delusermenu.getIsExit());
                     break;
                 }
                 case 0: {
                     cout << "logout";
-                    isExit = true;
+                    this->isExit = true;
                     break;
                 }
             }
 
-        } while (!isExit);
+        } while (!this->isExit);
     }
 
 };
@@ -286,11 +321,34 @@ class MainMenu {
 
 private:
     string password;
+    bool isExit = false;
+    int permission = 9;
+    string username;
 
 public:
-     int permission = 9;
-     string username;
-     bool isExit = false;
+     bool getIsExit() {
+         return this->isExit;
+     }
+
+     void setIsExit(bool isexit) {
+         this->isExit = isexit;
+     }
+
+     int getPermission() {
+         return this->permission;
+     }
+
+     void setPermission(int permission) {
+         this->permission = permission;
+     }
+
+     string getUsername() {
+         return this->username;
+     }
+
+     void setUsername(string username) {
+         this->username = username;
+     }
 
      void returnMenu(){
         int option;
@@ -311,14 +369,13 @@ public:
                 cin.clear();
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 cout << "\nPlease enter valid option.\n";
-                cout << "Enter your option: ";
+                cout << "\nEnter your option: ";
                 cin >> option;
                 cin.ignore(1);
             };
 
             switch (option) {
                 case 1: {
-                    User user;
                     int loginOption;
 
                     cout << "\nUsername:";
@@ -326,7 +383,8 @@ public:
                     cout << "Password:";
                     cin >> password;
 
-                    permission = user.Auth(username, password);
+                    User user(username, password);
+                    permission = user.Auth();
 
                     while (permission == 0) {
                         cout << "\nUser not register or incorrect passowrd.\n";
@@ -340,22 +398,24 @@ public:
                             cin >> username;
                             cout << "Password:";
                             cin >> password;
-                            permission = user.Auth(username, password);
+
+                            User user(username, password);
+                            permission = user.Auth();
                         }
                         else if (loginOption == 0) {
                             returnMenu();
                         }
                     };
 
-                    isExit = true;
+                    this->isExit = true;
                     break;
                 }
                 case 0:
                     cout << "\nExiting system...\n";
-                    isExit = true;
+                    this->isExit = true;
                     break;
             }
-        }while(!isExit);
+        }while(!this->isExit);
      }
 };
 

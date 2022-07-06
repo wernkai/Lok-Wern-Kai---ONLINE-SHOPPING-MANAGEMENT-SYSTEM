@@ -130,6 +130,8 @@
     <ClCompile Include="Lok Wern Kai - ONLINE SHOPPING MANAGEMENT SYSTEM.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="Order.txt" />
+    <Text Include="OrderItem.txt" />
     <Text Include="Product.txt" />
     <Text Include="User.txt" />
   </ItemGroup>

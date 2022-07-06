@@ -237,10 +237,23 @@ public:
 
 class Order {
 private:
-    int orderid, customerid, numberofitem;
+    int orderid, numberofitem;
+    string customerid;
 public:
 
-    Order(int orderid, int customerid, int numberofitem) {
+    Order(){
+        this->orderid = 0;
+        this->customerid = "";
+        this->numberofitem = 0;
+    }
+
+    Order(int orderid) {
+        this->orderid = orderid;
+        this->customerid = "";
+        this->numberofitem = 0;
+    }
+
+    Order(int orderid, string customerid, int numberofitem) {
         this->orderid = orderid;
         this->customerid = customerid;
         this->numberofitem = numberofitem;
@@ -251,13 +264,106 @@ public:
         ofstream file("Order.txt", ios::app);
 
         if (infile.is_open()) {
-            file << "\n" + to_string(this->orderid) + ";" + to_string(this->customerid) + ";" + to_string(this->numberofitem);
+            file << "\n" + to_string(this->orderid) + ";" + this->customerid + ";" + to_string(this->numberofitem);
         }
 
         infile.close();
         file.close();
 
         return true;
+    }
+
+    string viewOrder() {
+        ifstream file("Order.txt");
+        string
+            oid, cid, noofitem,result;
+
+        result += "---------------------------------------\n";
+        result += "Order Id | Customer Id | Number of Item\n";
+        result += "---------------------------------------";
+
+        while (file && !file.eof()) {
+            getline(file, oid, ';');
+            getline(file, cid, ';');
+            getline(file, noofitem);
+
+            result += "\n" + oid + " | " + cid + " | " + noofitem;
+        }
+        result += "\n---------------------------------------\n";
+        file.close();
+
+        return result;
+    }
+
+    bool deleteOrder() {
+
+        ifstream file("Order.txt");
+        ifstream fileO("Order.txt");
+        ofstream fileNew("ordertemp.txt");
+
+        string
+            oid, cid, noofitem, toDelete, line;
+
+        while (file && !file.eof()) {
+            getline(file, oid, ';');
+            getline(file, cid, ';');
+            getline(file, noofitem);
+
+            oid = removeNewLine(oid);
+
+            if (oid == to_string(this->orderid)) {
+                toDelete = "\n" + oid + ";" + cid + ";" + noofitem ;
+                file.close();
+                break;
+            }
+        }
+        file.close();
+
+        while (fileO && !fileO.eof()) {
+            getline(fileO, line);
+            line = "\n" + line;
+
+            if (line == toDelete) {
+                line.replace(line.find(toDelete), toDelete.length(), "");
+            }
+
+            if (line != "\n") {
+                fileNew << line;
+            }
+        }
+
+        fileO.close();
+        fileNew.close();
+        remove("Order.txt");
+
+        if (rename("ordertemp.txt", "Order.txt") == 0) {
+            return true;
+        }
+        else {
+            return false;
+        };
+    }
+
+    string searchOrder() {
+
+        ifstream file("Order.txt");
+        string
+            oid, cid, noofitem, result;
+
+        while (file && !file.eof()) {
+            getline(file, oid, ';');
+            getline(file, cid, ';');
+            getline(file, noofitem);
+
+            if (removeNewLine(oid) == to_string(this->orderid)) {
+                result += "\n" + oid + " | " + cid + " | " + noofitem + "\n";
+                file.close();
+                break;
+            }
+        }
+        file.close();
+
+        return result;
     }
 
     bool isOrderExists() {
@@ -270,7 +376,7 @@ public:
             getline(file, cid, ';');
             getline(file, itemno);
 
-            if (removeNewLine(oid) == to_string(this->orderid) && cid == to_string(this->customerid)) {
+            if (removeNewLine(oid) == to_string(this->orderid)) {
                 file.close();
                 return true;
             }

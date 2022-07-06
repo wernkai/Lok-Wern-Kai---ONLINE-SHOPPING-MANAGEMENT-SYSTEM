@@ -7,9 +7,18 @@
 using namespace std;
 
 class User {
+private:
+    string username, password;
 public:
+    User(){}
 
-    int Auth(const string& username, const string& password) {
+    User(const string& username, const string& password) {
+        this->username = username;
+        this->password = password;
+    }
+
+    /*int Auth(const string& username, const string& password) {*/
+    int Auth() {
         ifstream file("User.txt");
         string 
             fid, fname, faddr, fhp
@@ -25,7 +34,7 @@ public:
             getline(file, role, ';');
             getline(file, permission);
 
-            if (fusername == username && fpassword == password) {
+            if (fusername == this->username && fpassword == this->password) {
                 switch (stoi(role)) {
                 case 1:
                     file.close();
@@ -43,9 +52,142 @@ public:
 
         return 0;
     }
+
+    void SearchUser(const string& username) {
+        ifstream file("User.txt");
+        string
+            fid, fname, faddr, fhp
+            , fusername, fpassword, permission, role;
+
+        while (file && !file.eof()) {
+            getline(file, fid, ';');
+            getline(file, fname, ';');
+            getline(file, faddr, ';');
+            getline(file, fhp, ';');
+            getline(file, fusername, ';');
+            getline(file, fpassword, ';');
+            getline(file, role, ';');
+            getline(file, permission);
+
+            if (fusername == username) {
+                cout << "\n" + fid + " | " + fname + " | " + faddr + " | " + fhp + " | "
+                    + fusername + " | " + fpassword + " | " + role + " | " + permission;
+                file.close();
+                break;
+            }
+        }
+        file.close();
+    }
+
+    bool isUserExists(const string& username) {
+        ifstream file("User.txt");
+        string
+            fid, fname, faddr, fhp
+            , fusername, fpassword, permission, role;
+
+        while (file && !file.eof()) {
+            getline(file, fid, ';');
+            getline(file, fname, ';');
+            getline(file, faddr, ';');
+            getline(file, fhp, ';');
+            getline(file, fusername, ';');
+            getline(file, fpassword, ';');
+            getline(file, role, ';');
+            getline(file, permission);
+
+            if (fusername == username) {
+                file.close();
+                return true;
+            }
+        }
+        file.close();
+        return false;
+    }
+
+    bool isUserIdExists(const string& userid) {
+        ifstream file("User.txt");
+        string
+            fid, fname, faddr, fhp
+            , fusername, fpassword, permission, role;
+
+        while (file && !file.eof()) {
+            getline(file, fid, ';');
+            getline(file, fname, ';');
+            getline(file, faddr, ';');
+            getline(file, fhp, ';');
+            getline(file, fusername, ';');
+            getline(file, fpassword, ';');
+            getline(file, role, ';');
+            getline(file, permission);
+
+            if (fid == userid) {
+                file.close();
+                return true;
+            }
+        }
+        file.close();
+        return false;
+    }
+
+    bool isCustomer(const string userid) {
+        ifstream file("User.txt");
+        string
+            fid, fname, faddr, fhp
+            , fusername, fpassword, permission, role;
+
+        while (file && !file.eof()) {
+            getline(file, fid, ';');
+            getline(file, fname, ';');
+            getline(file, faddr, ';');
+            getline(file, fhp, ';');
+            getline(file, fusername, ';');
+            getline(file, fpassword, ';');
+            getline(file, role, ';');
+            getline(file, permission);
+
+            if (fid == userid && permission == "3") {
+                file.close();
+                return true;
+            }
+        }
+        file.close();
+        return false;
+    }
+
+    void viewCustomer() {
+        ifstream file("User.txt");
+        string
+            fid, fname, faddr, fhp
+            , fusername, fpassword, permission, role;
+
+        cout << "-----------------------------------------------------------------------\n";
+        cout << "=                         Customer Details                            =\n";
+        cout << "-----------------------------------------------------------------------\n";
+        cout << "Id | Name | Address | Contact | Username | Password | Permission | Role\n";
+        cout << "-----------------------------------------------------------------------";
+
+        while (file && !file.eof()) {
+            getline(file, fid, ';');
+            getline(file, fname, ';');
+            getline(file, faddr, ';');
+            getline(file, fhp, ';');
+            getline(file, fusername, ';');
+            getline(file, fpassword, ';');
+            getline(file, role, ';');
+            getline(file, permission);
+
+            if (role == "3" && permission == "3") {
+                cout << "\n" + fid + " | " + fname + " | " + faddr + " | " + fhp + " | "
+                    + fusername + " | " + fpassword + " | " + role + " | " + permission;
+            }
+        }
+        cout << "\n-----------------------------------------------------------------------\n";
+        file.close();
+    }
+
 };
 
-class Admin{
+class Admin: public User{
 private:
     string username;
 
@@ -217,85 +359,9 @@ public:
         cout << "\n-----------------------------------------------------------------------\n";
         file.close();
     }
-
-    void SearchUser(const string& username) {
-        ifstream file("User.txt");
-        string
-            fid, fname, faddr, fhp
-            , fusername, fpassword, permission, role;
-
-        while (file && !file.eof()) {
-            getline(file, fid, ';');
-            getline(file, fname, ';');
-            getline(file, faddr, ';');
-            getline(file, fhp, ';');
-            getline(file, fusername, ';');
-            getline(file, fpassword, ';');
-            getline(file, role, ';');
-            getline(file, permission);
-
-            if (fusername == username) {
-                cout << "\n" + fid + " | " + fname + " | " + faddr + " | " + fhp + " | "
-                    + fusername + " | " + fpassword + " | " + role + " | " + permission;
-                file.close();
-                break;
-            }
-        }
-        file.close();
-    }
-
-    bool isUserExists(const string& username) {
-        ifstream file("User.txt");
-        string
-            fid, fname, faddr, fhp
-            , fusername, fpassword, permission, role;
-
-        while (file && !file.eof()) {
-            getline(file, fid, ';');
-            getline(file, fname, ';');
-            getline(file, faddr, ';');
-            getline(file, fhp, ';');
-            getline(file, fusername, ';');
-            getline(file, fpassword, ';');
-            getline(file, role, ';');
-            getline(file, permission);
-
-            if (fusername == username) {
-                file.close();
-                return true;
-            }
-        }
-        file.close();
-        return false;
-    }
-
-    bool isUserIdExists(const string& userid) {
-        ifstream file("User.txt");
-        string
-            fid, fname, faddr, fhp
-            , fusername, fpassword, permission, role;
-
-        while (file && !file.eof()) {
-            getline(file, fid, ';');
-            getline(file, fname, ';');
-            getline(file, faddr, ';');
-            getline(file, fhp, ';');
-            getline(file, fusername, ';');
-            getline(file, fpassword, ';');
-            getline(file, role, ';');
-            getline(file, permission);
-
-            if (fid == userid) {
-                file.close();
-                return true;
-            }
-        }
-        file.close();
-        return false;
-    }
 };
 
-class Manager{
+class Manager : public User {
 private:
     string username;
 
@@ -375,17 +441,23 @@ public:
             return "\nProduct not exists.\n";
     }
 
-    string AddOrder(int orderid, int custormerid, int numberofitem) {
-        Order order(orderid, custormerid, numberofitem);
+    string AddOrder(int orderid, string customerid, int numberofitem) {
+        Order order(orderid, customerid, numberofitem);
         string signal = "";
 
-        if (!order.isOrderExists()) {
-            if (order.createOrder()) {
-                signal = "success";
+        if (!order.isOrderExists()) {// && isCustomer(customerid)
+
+            if (isUserIdExists(customerid) && isCustomer(customerid)) {
+                if (order.createOrder()) {
+                    signal = "success";
+                }
+                else {
+                    signal = "fail";
+                };
             }
             else {
-                signal = "fail";
-            };
+                signal = "customer404";
+            }
         }
         else {
             signal = "duplicate";
@@ -393,24 +465,47 @@ public:
         return signal;
     }
 
-    void DeleteOrder() {
+    string DeleteOrder(int orderid) {
+        Order order(orderid);
+        string signal = "";
 
+        if (order.isOrderExists()) {
+            if (order.deleteOrder()) {
+                signal = "success";
+            }
+            else {
+                signal = "fail";
+            };
+        }
+        else {
+            signal = "notfound";
+        }
+        return signal;
     }
 
     void EditOrder() {
 
     }
 
-    void ViewOrder() {
-
+    string ViewOrder() {
+        Order order = Order();
+        return order.viewOrder();
     }
 
-    void SearchOrder() {
+    string SearchOrder(int orderid) {
+        Order order = Order(orderid);
 
+        if (order.isOrderExists()) {
+            return order.searchOrder();
+        }
+        else
+            return "\nProduct not exists.\n";
     }
 };
 
-class Customer{
+class Customer : private User {
+public:
+    Customer() {}
 
     void SearchProduct() {
 
