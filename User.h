@@ -370,6 +370,7 @@ public:
         this->username = username;
     }
 
+    // Product
     string AddProduct(int productid, string productname, double productprice, int stockquantity, int isfragile) {
 
         Product product(productid, productname, productprice, stockquantity, isfragile);
@@ -441,6 +442,7 @@ public:
             return "\nProduct not exists.\n";
     }
 
+    // Order
     string AddOrder(int orderid, string customerid, int numberofitem) {
         Order order(orderid, customerid, numberofitem);
         string signal = "";
@@ -483,10 +485,6 @@ public:
         return signal;
     }
 
-    void EditOrder() {
-
-    }
-
     string ViewOrder() {
         Order order = Order();
         return order.viewOrder();
@@ -500,6 +498,100 @@ public:
         }
         else
             return "\nProduct not exists.\n";
+    }
+
+    // Order Item
+    string AddOrderItem(int orderid, int productid, int quantity) {
+
+        OrderItem orderitem(orderid, productid, quantity);
+        Product product(productid);
+        string signal = "";
+
+        orderitem.setOrderId(orderid);
+
+        if (orderitem.isOrderExists()) {
+            bool x = product.isProductExists();
+            if (product.isProductExists()) {
+
+                if (orderitem.isValidQuantity()) {
+                    
+                    if (!orderitem.isOrderItemExists()) {
+                        if (orderitem.createOrderItem()) {
+                            signal = "success";
+                        }
+                        else {
+                            signal = "fail";
+                        }
+                    }
+                    else {
+                        signal = "duplicate";
+                    }
+                }
+                else {
+                    signal = "outofstock";
+                };
+            }
+            else {
+                signal = "product404";
+            }
+        }
+        else {
+            signal = "noorderid";
+        }
+        return signal;
+    }
+
+    string DeleteOrderItem(int orderid, int productid) {
+        OrderItem orderitem(orderid, productid);
+        string signal = "";
+
+        if (orderitem.isOrderItemExists()) {
+            if (orderitem.deleteOrderItem()) {
+                signal = "success";
+            }
+            else {
+                signal = "fail";
+            };
+        }
+        else {
+            signal = "notfound";
+        }
+        return signal;
+    }
+
+    string SearchOrderItem(int orderid) {
+        OrderItem orderitem = OrderItem(orderid);
+
+        if (orderitem.isOrderItemExistsBatch()) {
+            return orderitem.searchOrderItem();
+        }
+        else
+            return "\nOrder Item not exists.\n";
+    }
+
+    string EditOrderItem(int orderid, int productid, int editquantity) {
+
+        OrderItem orderitem = OrderItem(orderid, productid, editquantity);
+        string signal = "";
+
+        if (orderitem.isOrderItemExists()) {
+            if (orderitem.editOrderItem(editquantity)) {
+                signal = "success";
+            }
+            else {
+                signal = "fail";
+            };
+        }
+        else {
+            signal = "notfound";
+        }
+        return signal;
+    }
+
+
+    string ViewOrderItem() {
+        OrderItem orderitem = OrderItem();
+        return orderitem.viewOrderItem();
     }
 };
 

@@ -35,14 +35,13 @@ public:
             system("CLS");
             cout << "-ADMIN CONSOLE - ONLINE SHOPPING MANAGEMENT SYSTEM-\n";
             cout << "-User: " + username + "\n";
-            //cout << "===================================================\n";
-            cout << setfill('=') << setw(55) << "\n";
-            cout << "=" << setfill(' ') << setw(30) << "Manager Menu" << setfill(' ') << setw(21) << "=\n";
+            cout << "===================================================\n";
+            cout << "=                   Manager Menu                  =\n";
             cout << "=                1 - Add Product                  =\n";
             cout << "=                2 - Edit/View/Search Product     =\n";
             cout << "=                3 - Delete Product               =\n";
             cout << "=                4 - Add Order                    =\n";
-            cout << "=                5 - Edit/View/Search Order       =\n";
+            cout << "=                5 - View/Search Order            =\n";
             cout << "=                6 - Delete Order                 =\n";
             cout << "=                7 - Add Order Item               =\n";
             cout << "=                8 - Edit/View/Search Order Item  =\n";
@@ -96,7 +95,7 @@ public:
                 break;
             }
             case 5: {
-                EditViewSearchOrderMenu orderdetailsmenu(this->username);
+                ViewSearchOrderMenu orderdetailsmenu(this->username);
                 do {
                     orderdetailsmenu.returnMenu();
                 } while (!orderdetailsmenu.getIsExit());
@@ -110,24 +109,24 @@ public:
                 break;
             }
             case 7: {
-                //AddOrderMenu addordermenu(this->username);
-                //do {
-                //    addordermenu.returnMenu();
-                //} while (!addordermenu.getIsExit());
+                AddOrderItemMenu addorderitemmenu(this->username);
+                do {
+                    addorderitemmenu.returnMenu();
+                } while (!addorderitemmenu.getIsExit());
                 break;
             }
             case 8: {
-                //EditViewSearchOrderMenu orderdetailsmenu(this->username);
-                //do {
-                //    orderdetailsmenu.returnMenu();
-                //} while (!orderdetailsmenu.getIsExit());
+                EditViewSearchOrderItemMenu orderitemdetailsmenu(this->username);
+                do {
+                    orderitemdetailsmenu.returnMenu();
+                } while (!orderitemdetailsmenu.getIsExit());
                 break;
             }
             case 9: {
-                //DeleteOrderMenu delordermenu(this->username);
-                //do {
-                //    delordermenu.returnMenu();
-                //} while (!delordermenu.getIsExit());
+                DeleteOrderItemMenu delorderitemmenu(this->username);
+                do {
+                    delorderitemmenu.returnMenu();
+                } while (!delorderitemmenu.getIsExit());
                 break;
             }
             case 0: {
@@ -230,7 +229,6 @@ public:
         } while (!this->isExit);
     }
 };
-
 
 class AdminMenu {
 
