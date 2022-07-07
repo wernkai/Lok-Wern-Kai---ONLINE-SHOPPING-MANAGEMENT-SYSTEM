@@ -53,6 +53,32 @@ public:
         return 0;
     }
 
+    string getUserid(string username) {
+        ifstream file("User.txt");
+        string
+            fid, fname, faddr, fhp
+            , fusername, fpassword, permission, role;
+
+        while (file && !file.eof()) {
+            getline(file, fid, ';');
+            getline(file, fname, ';');
+            getline(file, faddr, ';');
+            getline(file, fhp, ';');
+            getline(file, fusername, ';');
+            getline(file, fpassword, ';');
+            getline(file, role, ';');
+            getline(file, permission);
+
+            if (fusername == username) {
+                return fid;
+                file.close();
+                break;
+            }
+        }
+        return "User Id not found";
+        file.close();
+    }
+
     void SearchUser(const string& username) {
         ifstream file("User.txt");
         string
@@ -183,6 +209,21 @@ public:
         }
         cout << "\n-----------------------------------------------------------------------\n";
         file.close();
+    }
+
+    string SearchProduct(string productname) {
+        Product product = Product(productname);
+
+        if (product.isProductExists()) {
+            return product.searchProduct();
+        }
+        else
+            return "\nProduct not exists.\n";
+    }
+
+    string ViewProduct() {
+        Product product = Product();
+        return product.viewProduct();
     }
 
 };
@@ -427,27 +468,12 @@ public:
         return signal;
     }
 
-    string ViewProduct() {
-        Product product = Product();
-        return product.viewProduct();
-    }
-
-    string SearchProduct(string productname) {
-        Product product = Product(productname);
-
-        if (product.isProductExists()) {
-            return product.searchProduct();
-        }
-        else
-            return "\nProduct not exists.\n";
-    }
-
     // Order
     string AddOrder(int orderid, string customerid, int numberofitem) {
         Order order(orderid, customerid, numberofitem);
         string signal = "";
 
-        if (!order.isOrderExists()) {// && isCustomer(customerid)
+        if (!order.isOrderExists()) {
 
             if (isUserIdExists(customerid) && isCustomer(customerid)) {
                 if (order.createOrder()) {
@@ -490,6 +516,11 @@ public:
         return order.viewOrder();
     }
 
+    int getOrderSum(int orderid) {
+        Order order = Order(orderid);
+        return order.sumOrder();
+    }
+
     string SearchOrder(int orderid) {
         Order order = Order(orderid);
 
@@ -510,11 +541,11 @@ public:
         orderitem.setOrderId(orderid);
 
         if (orderitem.isOrderExists()) {
-            bool x = product.isProductExists();
+
             if (product.isProductExists()) {
 
                 if (orderitem.isValidQuantity()) {
-                    
+
                     if (!orderitem.isOrderItemExists()) {
                         if (orderitem.createOrderItem()) {
                             signal = "success";
@@ -588,26 +619,91 @@ public:
         return signal;
     }
 
-
     string ViewOrderItem() {
         OrderItem orderitem = OrderItem();
         return orderitem.viewOrderItem();
     }
 };
 
-class Customer : private User {
+class Customer : public User {
+private:
+    string username;
+    int packagefee;
+
 public:
-    Customer() {}
+    Customer(string username) {
+        this->username = username;
+    }
 
-    void SearchProduct() {
+    string AddToCart(int productid, int quantity) {
+
+        Product product(productid);   
+        string signal = "";
+
+        if (product.isProductExists()) {
+
+            if (product.isProductFragile(productid))
+            {
+                this->packagefee = 2;
+            }
+            else
+            {
+                this->packagefee = 1;
+            }
+
+            Cart cart(
+                this->username
+                , getUserid(this->username)
+                , productid
+                , product.getProductName(productid)
+                , quantity
+                , stoi(product.getProductPrice(productid)) * quantity
+                , this->packagefee
+            );
+
+            if (cart.stockQuantity() >= quantity) {
+
+                if (!cart.isItemExists()) {
+                    if (cart.addItem()) {
+                        signal = "success"; 
+                    }
+                    else {
+                        signal = "fail";
+                    };
+                }
+                else {
+                    signal = "itemadded";
+                }
+            }
+            else {
+                signal = "outofstock";
+            }
+        }
+        else {
+            signal = "product404";
+        }
+
+        return signal;
+    }
+
+    string CheckOutCart() {
+
+        Cart cart(this->username, getUserid(this->username));
+
+        return cart.checkOut();
 
     }
 
-    void AddToCart() {
+    bool CreateBill() {
 
+        Cart cart(this->username, getUserid(this->username));
+
+        return cart.createBill();
     }
 
-    void DisplayBill() {
+    string DisplayBill() {
+        Cart cart(this->username, getUserid(this->username));
 
+        return cart.viewBill();
     }
 };

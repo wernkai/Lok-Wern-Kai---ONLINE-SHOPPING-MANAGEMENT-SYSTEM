@@ -192,31 +192,24 @@ public:
 
             switch (option) {
             case 1: {
-                //AddUserMenu addusermenu(this->username);
-                //do {
-                //    addusermenu.returnMenu();
-                //} while (!addusermenu.isExit);
+                SearchProductMenu searchproductmenu(this->username);
+                do {
+                    searchproductmenu.returnMenu();
+                } while (!searchproductmenu.getIsExit());
                 break;
             }
             case 2: {
-                //EditViewSearchUserMenu userdetailsmenu(this->username);
-                //do {
-                //    userdetailsmenu.returnMenu();
-                //} while (!userdetailsmenu.isExit);
+                CartMenu cartmenu(this->username);
+                do {
+                    cartmenu.returnMenu();
+                } while (!cartmenu.getIsExit());
                 break;
             }
             case 3: {
-                //DeleteUserMenu delusermenu(this->username);
-                //do {
-                //    delusermenu.returnMenu();
-                //} while (!delusermenu.isExit);
-                break;
-            }
-            case 4: {
-                //DeleteUserMenu delusermenu(this->username);
-                //do {
-                //    delusermenu.returnMenu();
-                //} while (!delusermenu.isExit);
+                BillMenu billmenu(this->username);
+                do {
+                    billmenu.returnMenu();
+                } while (!billmenu.getIsExit());
                 break;
             }
             case 0: {

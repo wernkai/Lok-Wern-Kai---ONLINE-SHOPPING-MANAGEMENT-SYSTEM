@@ -788,17 +788,6 @@ public:
                 cin >> customerid;
             };
 
-            //cout << "No. of Item :";
-            //cin >> numberofitem;
-
-            //while (!cin) {
-            //    cin.clear();
-            //    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            //    cout << "\nPlease enter valid product quantity.\n";
-            //    cout << "Quantity :";
-            //    cin >> numberofitem;
-            //};
-
             if (orderid != 0 && customerid != "0") {
                 // Start creating product
                 Manager manager(this->username);
@@ -1002,6 +991,7 @@ public:
 
                     Manager manager(this->username);
                     cout << manager.SearchOrder(orderid);
+                    //cout << "\nTotal amount: " + to_string(manager.getOrderSum(orderid)) + "\n";
                     cout << "\nPlease enter 0 to return to Manager Menu.\n";
 
                 }
@@ -1265,7 +1255,7 @@ public:
     }
 
     void returnMenu() {
-        int option, orderid, productid, quantity;
+        int option, orderid, productid;
 
         do {
             system("CLS");
@@ -1389,6 +1379,249 @@ public:
             };
 
             // Back to Admin Menu
+            cin >> option;
+            cin.ignore(1);
+
+            while (option != 0 || !cin) {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                cout << "\nPlease enter 0 to return to Manager Menu.\n";
+                cout << "Enter your option: ";
+                cin >> option;
+                cin.ignore(1);
+            };
+
+            if (option == 0) {
+                this->isExit = true;
+            }
+
+        } while (!this->isExit);
+    }
+};
+
+// Customer Menu
+class SearchProductMenu {
+private:
+    string username;
+    bool isExit = false;
+
+public:
+
+    SearchProductMenu(string username) {
+        this->username = username;
+    }
+
+    bool getIsExit() {
+        return this->isExit;
+    }
+
+    void returnMenu() {
+        int option;
+        string productname;
+
+        do {
+            system("CLS");
+            cout << "-         ONLINE SHOPPING MANAGEMENT SYSTEM        -\n";
+            cout << "-User: " + username + "\n";
+            cout << "===================================================\n";
+            cout << "=                 Search Product                  =\n";
+            cout << "=                   0 - Back                      =\n";
+            cout << "===================================================\n";
+            cout << "***          Please do not enter space          ***\n";
+            cout << "***************************************************\n";
+
+            Customer customer(this->username);
+            cout << customer.ViewProduct();
+            cout << "\nPlease enter a product name to search.\n";
+            cin >> productname;
+            while (!cin) {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                cout << "\nPlease enter valid product name.\n";
+                cout << "Order Id : ";
+                cin >> productname;
+            };
+
+            if (productname != "0") {
+                cout << customer.SearchProduct(productname);
+                cout << "\nPlease enter 0 to return to Customer Menu.\n";
+
+            }
+            else {
+                cout << "\nStop cart creation, enter 0 return to Customer Menu.\n";
+            }
+
+            // Back to Admin Menu
+            cin >> option;
+            cin.ignore(1);
+
+            while (option != 0 || !cin) {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                cout << "\nPlease enter 0 to return to Customer Menu.\n";
+                cout << "Enter your option: ";
+                cin >> option;
+                cin.ignore(1);
+            };
+
+            if (option == 0) {
+                this->isExit = true;
+            }
+
+        } while (!this->isExit);
+    }
+};
+
+class CartMenu {
+private:
+    string username;
+    bool isExit = false;
+
+public:
+
+    CartMenu(string username) {
+        this->username = username;
+    }
+
+    bool getIsExit() {
+        return this->isExit;
+    }
+
+    void returnMenu() {
+        int option, productid, quantity;
+        bool addCart = true;
+
+        do {
+            system("CLS");
+            cout << "-         ONLINE SHOPPING MANAGEMENT SYSTEM        -\n";
+            cout << "-User: " + username + "\n";
+            cout << "===================================================\n";
+            cout << "=                 Customer Cart                   =\n";
+            cout << "=                   0 - Back                      =\n";
+            cout << "===================================================\n";
+            cout << "***          Please do not enter space          ***\n";
+            cout << "***************************************************\n";
+
+            Customer customer(this->username);
+            cout << customer.ViewProduct();
+
+            do {
+                cout << "\nAdding to cart...\n";
+                cout << "Product Id :";
+                cin >> productid;
+                while (!cin) {
+                    cin.clear();
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                    cout << "\nPlease enter valid product id.\n";
+                    cout << "Product Id :";
+                    cin >> productid;
+                };
+
+                cout << "Quantity :";
+                cin >> quantity;
+                while (!cin) {
+                    cin.clear();
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                    cout << "\nPlease enter valid product quantity.\n";
+                    cout << "Quantity :";
+                    cin >> quantity;
+                };
+
+                if (productid != 0 && quantity != 0) {
+                    // Start creating product
+                    string signal = customer.AddToCart(productid, quantity);
+
+                    if (signal == "success") {
+                        cout << "\nItem added to cart.\n";
+                    }
+                    else if (signal == "outofstock") {
+                        cout << "\nItem out of stock or not enough stock.\n";
+                    }
+                    else if (signal == "fail") {
+                        cout << "\nAdd to cart fail.\n";
+                    }
+                    else if (signal == "product404") {
+                        cout << "\nProduct not exists.\n";
+                    }
+                    else if (signal == "itemadded") {
+                        cout << "\nItem already in cart.\n";
+                    }
+
+                }
+                else {
+                    cout << "\nStop order creation.\n";
+                }
+
+                cout << "\nContinue add into cart? (1 - Yes, 0 - No)" << endl;
+                cin >> addCart;
+            } while (addCart);
+
+            if (customer.CheckOutCart() == "success") {
+                if (customer.CreateBill()) {
+                    cout << "\nCheck Out done...\n";
+                    cout << "\nOrder created......\n";
+                    cout << "\nYou may check you bill now......\n";
+                }
+            }
+            else if (customer.CheckOutCart() == "fail") {
+                cout << "\nFail to check out.\n";
+            }
+            else if (customer.CheckOutCart() == "exist") {
+                cout << "\nCheck out exists.\n";
+            }
+            else if (customer.CheckOutCart() == "outofstock") {
+                cout << "\nCheck out, out of stock.\n";
+            }
+            else if (customer.CheckOutCart() == "orderfail") {
+                cout << "\nFail to create order.\n";
+            }
+
+            // Back to Admin Menu
+            cout << "\nEnter 0 return to Customer Menu.\n";
+            cin >> option;
+            cin.ignore(1);
+
+            while (option != 0 || !cin) {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                cout << "\nPlease enter 0 to return to Manager Menu.\n";
+                cout << "Enter your option: ";
+                cin >> option;
+                cin.ignore(1);
+            };
+
+            if (option == 0) {
+                this->isExit = true;
+            }
+
+        } while (!this->isExit);
+    }
+};
+
+class BillMenu {
+private:
+    string username;
+    bool isExit = false;
+
+public:
+
+    BillMenu(string username) {
+        this->username = username;
+    }
+
+    bool getIsExit() {
+        return this->isExit;
+    }
+
+    void returnMenu() {
+        int option;
+
+        do {
+            Customer customer(this->username);
+            cout << customer.DisplayBill();
+
+            // Back to Admin Menu
+            cout << "\nEnter 0 return to Customer Menu.\n";
             cin >> option;
             cin.ignore(1);
 

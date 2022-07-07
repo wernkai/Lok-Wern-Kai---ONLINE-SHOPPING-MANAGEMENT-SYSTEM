@@ -25,3 +25,24 @@ string removeNewLine(string data) {
 
 	return result;
 }
+
+int getNewOrderId() {
+    ifstream file("Order.txt");
+    string
+        oid, cid, noofitem;
+    int result = 0;
+
+    while (file && !file.eof()) {
+        getline(file, oid, ';');
+        getline(file, cid, ';');
+        getline(file, noofitem);
+
+        if (result < stoi(removeNewLine(oid))) {
+            result = stoi(removeNewLine(oid));
+        }
+    }
+
+    file.close();
+
+    return result + 1;
+}
