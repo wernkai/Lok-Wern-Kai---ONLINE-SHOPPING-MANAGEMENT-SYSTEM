@@ -1,2 +1,4 @@
 
-glass | 2 | 40 | 2
+1;bread;2;4;1
+1;handphone;2;200;2
+1;glass;2;10;2

@@ -1,7 +1,0 @@
-
-C001;customer;3;glass;2;40;2
-C001;customer;2;handphone;5;500;2
-C001;customer;2;handphone;2;200;2
-C001;customer;3;glass;1;20;2
-C001;customer;2;handphone;10;1000;2
-C001;customer;2;handphone;1;100;2

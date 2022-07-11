@@ -1,7 +1,5 @@
 
-A1006;WernKai;N0.1,Jalan 999;0123456789;admin;admin;1;1
-999avs;kaikai;123,,asdasd;1234;po;123;2;2
-manager123;manager;123,ppp;165223636;manager;manager;2;2
+A001;WernKai;N0.1,Jalan 999;0123456789;admin;admin;1;1
+M001;manager;123,ppp;165223636;manager;manager;2;2
 C001;John;123,;123456789;customer;customer;3;3
-1;customer;123;123;test;test;3;3
-CA999;kai;123,jalansasa;1230;customer3;customer3;3;3
+U001;UserName;123,JalanTupai,Selangor;123456789;user01;user01;3;3

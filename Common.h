@@ -37,8 +37,12 @@ int getNewOrderId() {
         getline(file, cid, ';');
         getline(file, noofitem);
 
-        if (result < stoi(removeNewLine(oid))) {
-            result = stoi(removeNewLine(oid));
+        if (oid != "") {
+
+            if (result < stoi(removeNewLine(oid))) {
+                result = stoi(removeNewLine(oid));
+            }
+
         }
     }
 

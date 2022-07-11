@@ -178,7 +178,7 @@ public:
 
                 if (newproductprice != -1) { updatePrice = to_string(newproductprice); }
                 else { updatePrice = pprice; };
-                if (newstockquantity != -1) { updateQuantity = to_string(newstockquantity + stoi(pstock)); }
+                if (newstockquantity != 0) { updateQuantity = to_string(newstockquantity + stoi(pstock)); }
                 else { updateQuantity = pstock; };
                 if (newisfragile != 0) { updateIsFragile = to_string(newisfragile); }
                 else { updateIsFragile = pisfragile; };
@@ -452,7 +452,7 @@ public:
         string
             oiid, pid, quantity;
 
-        int sum = 0;
+        int sum = 0, packageFee = 0;
 
         while (fileItem && !fileItem.eof()) {
             getline(fileItem, oiid, ';');
@@ -460,12 +460,20 @@ public:
             getline(fileItem, quantity);
 
             oiid = removeNewLine(oiid);
+            pid = removeNewLine(pid);
 
             if (oiid == to_string(this->orderid)) {
-                Product product = Product(orderid);
-                string x = product.getProductPrice(stoi(pid));
+                Product product = Product(stoi(pid));
+
+                if (product.isProductFragile(stoi(pid))) {
+                    packageFee = 2;
+                }
+                else {
+                    packageFee = 1;
+                }
+
                 if (product.getProductPrice(stoi(pid)) != "Product price not found") {
-                    sum += stoi(quantity) * stoi(product.getProductPrice(stoi(pid)));
+                    sum += (stoi(quantity) * stoi(product.getProductPrice(stoi(pid)))) + packageFee;
                 }
             }
 
@@ -858,15 +866,76 @@ public:
 class Cart {
 private:
     string username, userid, productname;
-    int productid, quantity, amount, packagefee;
+    int productid, quantity, amount, packagefee, orderid;
+
+    bool delCart() {
+        ifstream file("Cart.txt");
+        ofstream fileNewItem("carttemp.txt");
+
+        string
+            oid, cid, username, pid, pname, quantity, amount, packagefee
+            , toRemain, line;
+
+
+        while (file && !file.eof()) {
+            getline(file, oid, ';');
+            getline(file, cid, ';');
+            getline(file, username, ';');
+            getline(file, pid, ';');
+            getline(file, pname, ';');
+            getline(file, quantity, ';');
+            getline(file, amount, ';');
+            getline(file, packagefee);
+
+            oid = removeNewLine(oid);
+
+            if (oid != to_string(this->orderid)) {
+                toRemain += "\n" + oid + ";"
+                    + cid + ";"
+                    + username + ";"
+                    + pid + ";"
+                    + pname + ";"
+                    + quantity + ";"
+                    + amount + ";"
+                    + packagefee;
+            }
+        }
+
+        file.close();
+
+        //cout << toRemain;
+        fileNewItem << toRemain;
+
+        fileNewItem.close();
+
+        remove("Cart.txt");
+
+        if (rename("carttemp.txt", "Cart.txt") == 0) {
+
+            return true;
+        }
+        else {
+            return false;
+        };
+    }
 public:
 
-    Cart(string username, string userid) {
+    Cart(string username, string userid, int orderid) {
         this->userid = userid;
         this->username = username;
+        this->orderid = orderid;
     }
 
-    Cart(string username, string userid, int productid, string productname, int quantity, int amount, int packagefee) {
+    Cart(
+        string username
+        , string userid
+        , int productid
+        , string productname
+        , int quantity
+        , int amount
+        , int packagefee
+        , int orderid
+    ) {
         this->userid = userid;
         this->username = username;
         this->productid = productid;
@@ -874,22 +943,23 @@ public:
         this->quantity = quantity;
         this->amount = amount;
         this->packagefee = packagefee;
+        this->orderid = orderid;
     }
 
     bool addItem() {
-        ifstream infile("Cart-"+ this->userid +".txt");
-        ofstream file("Cart-" + this->userid + ".txt", ios::app);
+        ifstream infile("Cart.txt");
+        ofstream file("Cart.txt", ios::app);
 
         if (infile.is_open()) {
-            file << "\n" 
-                + userid 
+            file << "\n"
+                + to_string(this->orderid)
+                + ";" + userid 
                 + ";" + this->username 
                 + ";" + to_string(this->productid)
                 + ";" + productname
                 + ";" + to_string(quantity)
                 + ";" + to_string(amount)
-                + ";" + to_string(packagefee)
-                ;
+                + ";" + to_string(packagefee);
         }
 
         infile.close();
@@ -899,17 +969,17 @@ public:
     }
 
     string checkOut() {
-        int neworderid = getNewOrderId(); 
         string
-            cid, username, pid, pname, quantity, amount, packagefee
+            oid, cid, username, pid, pname, quantity, amount, packagefee
             , signal;
 
-        ifstream cartFile("Cart-" + this->userid + ".txt");
-        Order order(neworderid, cid, 0);
+        ifstream cartFile("Cart.txt");
+        Order order(this->orderid, this->userid, 0);
 
         if (order.createOrder()) {
 
             while (cartFile && !cartFile.eof()) {
+                getline(cartFile, oid, ';');
                 getline(cartFile, cid, ';');
                 getline(cartFile, username, ';');
                 getline(cartFile, pid, ';');
@@ -918,7 +988,7 @@ public:
                 getline(cartFile, amount, ';');
                 getline(cartFile, packagefee);
 
-                OrderItem orderitem(neworderid, stoi(pid), stoi(quantity));
+                OrderItem orderitem(this->orderid, stoi(pid), stoi(quantity));
 
                 if (orderitem.isValidQuantity()) {
                     if (!orderitem.isOrderItemExists()) {
@@ -950,33 +1020,50 @@ public:
 
     string viewBill() {
         string
-            cid, username, pid, pname, quantity, amount, packagefee
-            , result;
+            oid, pname, quantity, amount, packagefee
+            , result, curOrderid = "empty";
         int total = 0, presum = 0;
 
         ifstream billFile("Bill-" + this->userid + ".txt");
 
         result += "---------------------------------------------\n";
-        result += "=                     Bill                  =\n";
+        result += "=                    Bill                   =\n";
         result += "---------------------------------------------\n";
         result += " Product Name | Quantity | Amount | Packaging\n";
         result += "---------------------------------------------";
 
         while (billFile && !billFile.eof()) {
-            getline(billFile, cid, ';');
-            getline(billFile, username, ';');
-            getline(billFile, pid, ';');
+            getline(billFile, oid, ';');
             getline(billFile, pname, ';');
             getline(billFile, quantity, ';');
             getline(billFile, amount, ';');
             getline(billFile, packagefee);
 
+            if (oid == "" && pname == "" && quantity == "" && amount == "" && packagefee == "") {
+                break;
+            }
+
+            if (curOrderid != removeNewLine(oid) && curOrderid != "empty") {
+                result += "\n---------------------------------------------\n";
+                result += "Total Amount:" + to_string(total) + "\n";
+                curOrderid = removeNewLine(oid);
+                result += "\n***Order Id: " + curOrderid;
+                presum = 0;
+                total = 0;
+            }
+            else if (curOrderid != removeNewLine(oid) && curOrderid == "empty") {
+                curOrderid = removeNewLine(oid);
+                result += "\n***Order Id: " + curOrderid;
+                presum = 0;
+                total = 0;
+            }
+
             result += "\n" + pname + " | " + quantity + " | " + amount + " | " + packagefee;
-            //presum = stoi(amount) + stoi(packagefee);
-            //total += presum;
+            presum = stoi(amount) + stoi(packagefee);
+            total += presum;
         }
         result += "\n---------------------------------------------\n";
-        //result += "Total Amount:" + to_string(total) + "\n";
+        result += "Total Amount:" + to_string(total) + "\n";
         billFile.close();
 
         return result;
@@ -984,14 +1071,15 @@ public:
 
     bool createBill() {
         string
-            cid, username, pid, pname, quantity, amount, packagefee
+            oid, cid, username, pid, pname, quantity, amount, packagefee
             , result;
         int total = 0;
 
-        ifstream cartFile("Cart-" + this->userid + ".txt");
-        ofstream billFile("Bill-" + this->userid + ".txt");
+        ifstream cartFile("Cart.txt");
+        ofstream billFile("Bill-" + this->userid + ".txt", ios::app);
 
         while (cartFile && !cartFile.eof()) {
+            getline(cartFile, oid, ';');
             getline(cartFile, cid, ';');
             getline(cartFile, username, ';');
             getline(cartFile, pid, ';');
@@ -1000,14 +1088,16 @@ public:
             getline(cartFile, amount, ';');
             getline(cartFile, packagefee);
 
-            result += "\n" + pname + " ; " + quantity + " ; " + amount + " ; " + packagefee;
+            //result += "\n" + removeNewLine(oid) + ";" + pname + ";" + quantity + ";" + amount + ";" + packagefee;
+            billFile << "\n" + removeNewLine(oid) + ";" + pname + ";" + quantity + ";" + amount + ";" + packagefee;
         }
 
-        billFile << result;
+        //billFile << result;
 
         billFile.close();
         cartFile.close();
 
+        delCart();
         return true;
     }
 

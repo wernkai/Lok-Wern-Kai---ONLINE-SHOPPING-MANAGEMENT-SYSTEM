@@ -991,7 +991,7 @@ public:
 
                     Manager manager(this->username);
                     cout << manager.SearchOrder(orderid);
-                    //cout << "\nTotal amount: " + to_string(manager.getOrderSum(orderid)) + "\n";
+                    cout << "\nTotal amount: " + to_string(manager.getOrderSum(orderid)) + "\n";
                     cout << "\nPlease enter 0 to return to Manager Menu.\n";
 
                 }
@@ -1448,7 +1448,7 @@ public:
 
             }
             else {
-                cout << "\nStop cart creation, enter 0 return to Customer Menu.\n";
+                cout << "\nStop product searching, enter 0 return to Customer Menu.\n";
             }
 
             // Back to Admin Menu
@@ -1490,6 +1490,8 @@ public:
     void returnMenu() {
         int option, productid, quantity;
         bool addCart = true;
+        int neworderid = getNewOrderId();
+        string status = "proceed";
 
         do {
             system("CLS");
@@ -1502,7 +1504,7 @@ public:
             cout << "***          Please do not enter space          ***\n";
             cout << "***************************************************\n";
 
-            Customer customer(this->username);
+            Customer customer(this->username, neworderid);
             cout << customer.ViewProduct();
 
             do {
@@ -1550,30 +1552,41 @@ public:
                 }
                 else {
                     cout << "\nStop order creation.\n";
+                    addCart = false;
+                    status = "quit";
+                    break;
                 }
 
                 cout << "\nContinue add into cart? (1 - Yes, 0 - No)" << endl;
                 cin >> addCart;
+                while (!cin) {
+                    cin.clear();
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                    cout << "\nPlease enter valid option:";
+                    cin >> addCart;
+                };
             } while (addCart);
 
-            if (customer.CheckOutCart() == "success") {
-                if (customer.CreateBill()) {
-                    cout << "\nCheck Out done...\n";
-                    cout << "\nOrder created......\n";
-                    cout << "\nYou may check you bill now......\n";
+            if (status == "proceed") {
+                if (customer.CheckOutCart() == "success") {
+                    if (customer.CreateBill()) {
+                        cout << "\nCheck Out done...\n";
+                        cout << "\nOrder created......\n";
+                        cout << "\nYou may check you bill now......\n";
+                    }
                 }
-            }
-            else if (customer.CheckOutCart() == "fail") {
-                cout << "\nFail to check out.\n";
-            }
-            else if (customer.CheckOutCart() == "exist") {
-                cout << "\nCheck out exists.\n";
-            }
-            else if (customer.CheckOutCart() == "outofstock") {
-                cout << "\nCheck out, out of stock.\n";
-            }
-            else if (customer.CheckOutCart() == "orderfail") {
-                cout << "\nFail to create order.\n";
+                else if (customer.CheckOutCart() == "fail") {
+                    cout << "\nFail to check out.\n";
+                }
+                else if (customer.CheckOutCart() == "exist") {
+                    cout << "\nCheck out exists.\n";
+                }
+                else if (customer.CheckOutCart() == "outofstock") {
+                    cout << "\nCheck out, out of stock.\n";
+                }
+                else if (customer.CheckOutCart() == "orderfail") {
+                    cout << "\nFail to create order.\n";
+                }
             }
 
             // Back to Admin Menu

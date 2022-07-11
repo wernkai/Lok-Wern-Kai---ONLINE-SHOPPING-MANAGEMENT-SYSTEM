@@ -628,11 +628,16 @@ public:
 class Customer : public User {
 private:
     string username;
-    int packagefee;
+    int packagefee, orderid;
 
 public:
     Customer(string username) {
         this->username = username;
+    }
+
+    Customer(string username, int orderid) {
+        this->username = username;
+        this->orderid = orderid;
     }
 
     string AddToCart(int productid, int quantity) {
@@ -659,6 +664,7 @@ public:
                 , quantity
                 , stoi(product.getProductPrice(productid)) * quantity
                 , this->packagefee
+                , this->orderid
             );
 
             if (cart.stockQuantity() >= quantity) {
@@ -688,22 +694,19 @@ public:
 
     string CheckOutCart() {
 
-        Cart cart(this->username, getUserid(this->username));
-
+        Cart cart(this->username, getUserid(this->username), this->orderid);
         return cart.checkOut();
 
     }
 
     bool CreateBill() {
 
-        Cart cart(this->username, getUserid(this->username));
-
+        Cart cart(this->username, getUserid(this->username), this->orderid);
         return cart.createBill();
     }
 
     string DisplayBill() {
-        Cart cart(this->username, getUserid(this->username));
-
+        Cart cart(this->username, getUserid(this->username), this->orderid);
         return cart.viewBill();
     }
 };
