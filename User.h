@@ -17,7 +17,6 @@ public:
         this->password = password;
     }
 
-    /*int Auth(const string& username, const string& password) {*/
     int Auth() {
         ifstream file("User.txt");
         string 
