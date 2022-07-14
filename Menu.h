@@ -352,6 +352,13 @@ public:
             cout << "=                  1 - Login                 =\n";
             cout << "=                  0 - Exit                  =\n";
             cout << "==============================================\n";
+            cout << "= Pre-created account for testing.           =\n";
+            cout << "= username    | password                     =\n";
+            cout << "= -----------------------                    =\n";
+            cout << "= admin       | admin                        =\n";
+            cout << "= customer    | customer                     =\n";
+            cout << "= manager     | manager                      =\n";
+            cout << "==============================================\n";
             cout << "Enter your option: ";
             cin >> option;
             cin.ignore(1);

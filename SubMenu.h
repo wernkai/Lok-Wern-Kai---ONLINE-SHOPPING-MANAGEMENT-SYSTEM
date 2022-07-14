@@ -634,49 +634,54 @@ public:
                         cout << "\nCurrent record:";
                         cout << manager.SearchProduct(productname);
 
-                        cout << "\n";
-                        cout << "\nPlease enter details (enter -1 if unchange): \n";
-                        cout << "\nPrice Per Unit: ";
-                        cin >> editproductprice;
-                        while (!cin) {
-                            cin.clear();
-                            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                            cout << "\nPlease enter valid product price.\n";
-                            cout << "Price Per Unit : ";
+                        if (manager.SearchProduct(productname) != "\nProduct not exists.\n") {
+                            cout << "\n";
+                            cout << "\nPlease enter details: \n";
+                            cout << "\nPrice Per Unit (enter -1 if unchange): ";
                             cin >> editproductprice;
-                        };
-                        cout << "\nStock Quantity: ";
-                        cin >> editstockquantity;
-                        while (!cin) {
-                            cin.clear();
-                            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                            cout << "\nPlease enter valid product quantity.\n";
-                            cout << "Quantity :";
+                            while (!cin) {
+                                cin.clear();
+                                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                                cout << "\nPlease enter valid product price.\n";
+                                cout << "Price Per Unit (enter 0 if unchange): ";
+                                cin >> editproductprice;
+                            };
+                            cout << "\nStock Quantity: ";
                             cin >> editstockquantity;
-                        };
-                        cout << "\nFragile (1 - No, 2 - Yes, 0 - Unchange): ";
-                        cin >> editisfragile;            
-                        cin.ignore(1);
-                        while ((editisfragile != 1 && editisfragile != 2 && editisfragile !=0) || !cin) {
-                            cin.clear();
-                            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                            cout << "\nPlease enter vailid option.\n";
-                            cout << "Fragile (1 - No, 2 - Yes, 0 - Unchange) :";
+                            while (!cin) {
+                                cin.clear();
+                                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                                cout << "\nPlease enter valid product quantity.\n";
+                                cout << "Quantity :";
+                                cin >> editstockquantity;
+                            };
+                            cout << "\nFragile (1 - No, 2 - Yes, 0 - Unchange): ";
                             cin >> editisfragile;
-                        };
+                            cin.ignore(1);
+                            while ((editisfragile != 1 && editisfragile != 2 && editisfragile != 0) || !cin) {
+                                cin.clear();
+                                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                                cout << "\nPlease enter vailid option.\n";
+                                cout << "Fragile (1 - No, 2 - Yes, 0 - Unchange) :";
+                                cin >> editisfragile;
+                            };
 
-                        string signal = manager.EditProduct(productname, editproductprice, editstockquantity, editisfragile);
+                            string signal = manager.EditProduct(productname, editproductprice, editstockquantity, editisfragile);
 
-                        if (signal == "success") {
-                            cout << "\nEdited record:";
-                            cout << manager.SearchProduct(productname);
-                            cout << "\nProduct updated, enter 0 return to Manager Menu.\n";
+                            if (signal == "success") {
+                                cout << "\nEdited record:";
+                                cout << manager.SearchProduct(productname);
+                                cout << "\nProduct updated, enter 0 return to Manager Menu.\n";
+                            }
+                            else if (signal == "fail") {
+                                cout << "\nProduct fail to update, enter 0 return to Manager Menu.\n";
+                            }
+                            else if (signal == "notfound") {
+                                cout << "\nProduct not exists in database, enter 0 return to Manager Menu.\n";
+                            }
                         }
-                        else if (signal == "fail") {
-                            cout << "\nProduct fail to update, enter 0 return to Manager Menu.\n";
-                        }
-                        else if (signal == "notfound") {
-                            cout << "\nProduct not exists in database, enter 0 return to Manager Menu.\n";
+                        else {
+                            cout << "\nStop product edit, enter 0 return to Manager Menu.\n";
                         }
 
                     }
